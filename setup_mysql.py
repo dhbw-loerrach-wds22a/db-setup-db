@@ -27,6 +27,10 @@ def create_tables(connection):
         """)
 
         cursor.execute("""
+                CREATE INDEX name_idx ON business(name)
+                """)
+
+        cursor.execute("""
                 CREATE TABLE IF NOT EXISTS user (
                     user_id VARCHAR(255) PRIMARY KEY,
                     review_count INT,
