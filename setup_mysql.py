@@ -21,6 +21,10 @@ def create_tables(connection):
         CREATE TABLE IF NOT EXISTS business (
             business_id VARCHAR(255) PRIMARY KEY,
             name VARCHAR(255),
+            address VARCHAR(255),
+            city VARCHAR(255),
+            state VARCHAR(12),
+            zip VARCHAR(255),
             stars FLOAT,
             review_count INT
         )
@@ -59,6 +63,10 @@ def bulk_insert_users(file_path, connection, batch_size=1000):
                     user.get('yelping_since', None),
                     user.get('average_stars', None)
                 )
+
+                contains_none = any(item is None for item in user_data)
+                if contains_none:
+                    continue
 
                 # Add to batch
                 batch.append(user_data)
@@ -102,9 +110,20 @@ def bulk_insert_businesses(file_path, connection, batch_size=1000):
                 business_data = (
                     business['business_id'],
                     business['name'],
+                    business.get('address', None),  # using .get() to handle missing keys
+                    business.get('city', None),  # using .get() to handle missing keys
+                    business.get('state', None),  # using .get() to handle missing keys
+                    business.get('postal_code', None),  # using .get() to handle missing keys
                     business.get('stars', None),  # using .get() to handle missing keys
                     business.get('review_count', None)
                 )
+                if business_data[2] == "":
+                    continue
+                contains_none = any(item is None for item in business_data)
+                if contains_none:
+                    # show_values = [(item is None, item) for item in business_data]
+                    # print("none_values", show_values)
+                    continue
 
                 # Add to batch
                 batch.append(business_data)
@@ -113,8 +132,8 @@ def bulk_insert_businesses(file_path, connection, batch_size=1000):
                 if len(batch) >= batch_size:
                     # Execute batch insert
                     cursor.executemany("""
-                                INSERT INTO business (business_id, name, stars, review_count)
-                                VALUES (%s, %s, %s, %s)
+                                INSERT INTO business (business_id, name, address, city, state, zip, stars, review_count)
+                                VALUES (%s, %s, %s, %s,%s, %s, %s, %s)
                                 ON DUPLICATE KEY UPDATE
                                 name=VALUES(name), stars=VALUES(stars), review_count=VALUES(review_count)
                             """, batch)
@@ -124,11 +143,11 @@ def bulk_insert_businesses(file_path, connection, batch_size=1000):
             # Insert any remaining data in the last batch
             if batch:
                 cursor.executemany("""
-                            INSERT INTO business (business_id, name, stars, review_count)
-                            VALUES (%s, %s, %s, %s)
-                            ON DUPLICATE KEY UPDATE
-                            name=VALUES(name), stars=VALUES(stars), review_count=VALUES(review_count)
-                        """, batch)
+                                INSERT INTO business (business_id, name, address, city, state, zip, stars, review_count)
+                                VALUES (%s, %s, %s, %s,%s, %s, %s, %s)
+                                ON DUPLICATE KEY UPDATE
+                                name=VALUES(name), stars=VALUES(stars), review_count=VALUES(review_count)
+                            """, batch)
                 connection.commit()
             cursor.close()
 
