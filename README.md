@@ -11,7 +11,7 @@ This repository contains scripts and configurations for setting up MongoDB and M
 
 ## Prerequisites
 - Python 3.x installed.
-- Access to MongoDB and MySQL servers.
+- Access to MongoDB and MySQL servers. See repository "services" for the docker containers needed to run this project.
 - Downloaded Yelp dataset.
 
 ## Installation
