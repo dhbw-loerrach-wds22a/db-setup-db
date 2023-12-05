@@ -21,7 +21,7 @@ This repository contains scripts and configurations for setting up MongoDB and M
 
 ## Adding the Yelp Dataset
 1. Download the Yelp dataset from the official [Yelp Dataset page](https://www.yelp.com/dataset).
-2. Place the downloaded dataset in the `data` folder, which should be in the same directory as the scripts.
+2. Place the individual files from the downloaded dataset in the `data` folder, which should be in the same directory as the scripts.
 
 
 ## Configuration
