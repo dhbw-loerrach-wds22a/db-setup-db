@@ -1,4 +1,5 @@
 # Database Setup Instructions
+# See services repository for setup instructions
 
 ## Overview
 This repository contains scripts and configurations for setting up MongoDB and MySQL databases, along with a script for importing data into these databases.
